@@ -1,0 +1,5 @@
+
+
+class BiblePipeline(object):
+    pass
+
