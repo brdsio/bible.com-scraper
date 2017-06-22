@@ -1,6 +1,5 @@
 import json
 import scrapy
-from scrapy.exceptions import CloseSpider
 
 
 class BibleSpider(scrapy.Spider):
