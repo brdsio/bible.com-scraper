@@ -11,9 +11,11 @@ class BibleSpider(scrapy.Spider):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.base_url = 'https://events.bible.com/api/bible/chapter/3.1?id=1608&reference='
+        self.bible_id = 1608
+        self.base_url = f'https://events.bible.com/api/bible/'\
+                        f'chapter/3.1?id={self.bible_id}&reference='
         self.start_urls = [
-            f'{self.base_url}REV.20'
+            f'{self.base_url}GEN.1'
         ]
 
     def parse(self, response):
