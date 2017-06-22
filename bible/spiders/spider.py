@@ -1,6 +1,6 @@
 import json
 import scrapy
-from bible.items import Verse
+from scrapy.exceptions import CloseSpider
 
 
 class BibleSpider(scrapy.Spider):
@@ -13,7 +13,7 @@ class BibleSpider(scrapy.Spider):
 
         self.base_url = 'https://events.bible.com/api/bible/chapter/3.1?id=1608&reference='
         self.start_urls = [
-            f'{self.base_url}GEN.1'
+            f'{self.base_url}REV.20'
         ]
 
     def parse(self, response):
@@ -26,9 +26,17 @@ class BibleSpider(scrapy.Spider):
             encoding='utf-8'
         )
 
-        verses = {}
+        if 'verses' not in response.meta:
+            verses = {}
+        else:
+            verses = response.meta['verses']
+
         book = data['reference']['human'].split(" ")[0]
         chapter = data['reference']['usfm'][0].split(".")[1]
+
+        next_chapter = data['next']
+        if next_chapter is not None:
+            next_chapter = next_chapter['usfm'][0]
 
         for verse in html.css(".verse"):
             number = verse.xpath('@data-usfm').extract_first().split(".")[-1]
@@ -45,4 +53,11 @@ class BibleSpider(scrapy.Spider):
 
             verses[book][chapter][number] += ''.join(text).strip()
 
-        yield verses
+        if next_chapter is None:
+            yield verses
+        else:
+            yield scrapy.Request(
+                f"{self.base_url}{next_chapter}",
+                callback=self.parse,
+                meta={'verses': verses}
+            )
