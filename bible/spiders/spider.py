@@ -1,7 +1,6 @@
 import json
 import scrapy
 
-
 class BibleSpider(scrapy.Spider):
     # NVI: 129 ARA: 1608
 
