@@ -9,7 +9,7 @@ class BibleSpider(scrapy.Spider):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.bible_id = 1608
+        self.bible_id = 129
         self.base_url = f'https://events.bible.com/api/bible/'\
                         f'chapter/3.1?id={self.bible_id}&reference='
         self.start_urls = [
@@ -51,7 +51,11 @@ class BibleSpider(scrapy.Spider):
             if number not in verses[book][chapter]:
                 verses[book][chapter][number] = ''
 
-            verses[book][chapter][number] += ''.join(text).strip()
+            text.extend([' ']) # adding space after the end of the sentence
+            texto = ''.join(text)
+            if len(texto.strip()) > 0:
+                # excluding texts that only contains spaces
+                verses[book][chapter][number] += texto
 
         if next_chapter is None:
             yield verses
