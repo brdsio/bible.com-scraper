@@ -31,7 +31,10 @@ class BibleSpider(scrapy.Spider):
         else:
             verses = response.meta['verses']
 
-        book = data['reference']['human'].split(" ")[0]
+
+        book = data['reference']['human'].split(" ")
+        book.pop(-1)
+        book = " ".join(book)
         chapter = data['reference']['usfm'][0].split(".")[1]
 
         next_chapter = data['next']
